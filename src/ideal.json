@@ -1,0 +1,27 @@
+[
+    {
+        "name": "www",
+        "type": "CNAME",
+        "data": ""
+    },
+    {
+        "name": "yyy",
+        "type": "A",
+        "data": "2.2.2.2"
+    },
+    {
+        "name": "wxw",
+        "type": "A",
+        "data": "1.1.1.1"
+    },
+    {
+        "name": "",
+        "type": "A",
+        "data": "1.1.1.1"
+    },
+    {
+        "name": "",
+        "type": "A",
+        "data": "2.3.2.2"
+    }
+]
