@@ -25,7 +25,7 @@ echo "[BUILD]"
 if [ "$is_release" = "yes" ];then
     cargo build --target "$triple" --release
 else
-    cargo build --target "$triple" --debug
+    cargo build --target "$triple"
 fi
 
 # echo "[TEST]"
