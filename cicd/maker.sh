@@ -57,5 +57,5 @@ if [ "$is_release" = "yes" ];then
         exit 0
     fi
 else
-    cp target/$target/debug/dynv6-sync export/dynv6-sync
+    cp target/$triple/debug/dynv6-sync export/dynv6-sync
 fi
