@@ -90,4 +90,4 @@ jobs:
         with:
           name: raw+${{ matrix.target.name }}
           path: |
-            export/raw/*
+            export/*
