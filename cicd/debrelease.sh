@@ -7,5 +7,6 @@ if [ -z "$2" ];then
 fi
 cargo deb --target "$2" --variant "$1"
 for deb in $(ls "target/$2/debian"|grep -E '\.deb$') ;do
-    cat /etc/os-release|grep VERSION_CODENAME|sed -e "s/^.*=//g" > "target/$2/debian/$deb.codename"
+    cp "target/$2/debian/$deb" "export/$deb"
+    cat /etc/os-release|grep VERSION_CODENAME|sed -e "s/^.*=//g" > "export/$deb.codename"
 done
