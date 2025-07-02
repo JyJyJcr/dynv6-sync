@@ -27,16 +27,14 @@ tracing-journald = "0.3.1"
 
 [package.metadata.deb]
 name = "dynv6-sync"
-section="httpd"
+section="net"
 priority="optional"
 depends = ["$auto"]
-
 assets = [
     ["target/release/dynv6-sync", "usr/bin/dynv6-sync", "755"],
 ]
-
 extended-description = """\
-Simple dynv6 update program mainly for hook usage."""
+dynv6-sync is a simple dynv6 update program mainly for hook usage."""
 
 # revision format
 # let main revision num to be %
