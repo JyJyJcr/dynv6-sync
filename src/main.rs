@@ -19,8 +19,8 @@ use crate::resolve::{PreRecord, Resolvable};
 struct Args {
     #[clap(help = "Path to the configuration file")]
     conf: PathBuf,
-    #[clap(help = "Path to the variable file")]
-    vars: PathBuf,
+    // #[clap(help = "Path to the variable file")]
+    // vars: PathBuf,
     #[clap(flatten)]
     log_params: LogArg,
     //#[clap(short = 'p', num_args = 2)]
@@ -51,40 +51,24 @@ enum LogOut {
 
 #[derive(Deserialize, Debug)]
 struct Config {
+    lock_path: PathBuf,
+    vars_path: PathBuf,
     token_path: PathBuf,
     domain: String,
     retry: usize,
     records: Vec<PreRecord>,
 }
 
-fn main() -> anyhow::Result<()> {
-    let exe = std::env::args().nth(0).unwrap();
-    let fd = open(exe.as_str(), OFlag::empty(), Mode::empty())?;
-    let lock = match Flock::lock(fd, nix::fcntl::FlockArg::LockExclusive) {
-        Ok(l) => l,
-        Err(_) => return Err(anyhow::anyhow!("Failed to lock the file: {}", exe)),
-    };
-    //println!("LOCK");
-    inner_main()?;
-    drop(lock);
-    Ok(())
-}
-
-#[tokio::main(flavor = "current_thread")]
-async fn inner_main() -> anyhow::Result<()> {
-    //sleep(std::time::Duration::from_secs(2)).await; // for testing
-    //return Ok(());
-    let args = Args::parse();
-    // start tracing
+fn init_tracing(log_params: &LogArg) -> anyhow::Result<()> {
     let leveled_subsc = tracing_subscriber::registry().with(
-        Into::<EnvFilter>::into(&args.log_params.log_level),
+        Into::<EnvFilter>::into(&log_params.log_level),
         //     format!(
         //     "{}=trace,tower_http=trace,axum::rejection=trace",
         //     env!("CARGO_CRATE_NAME")
         // )
         //"trace",
     );
-    match args.log_params.log_out {
+    match log_params.log_out {
         LogOut::Stdout => {
             leveled_subsc.with(tracing_subscriber::fmt::layer()).init();
         }
@@ -93,72 +77,101 @@ async fn inner_main() -> anyhow::Result<()> {
             leveled_subsc.with(tracing_journald::layer()?).init();
         }
     }
-    tracing::info!(
-        "tracing initialized with level: {}",
-        args.log_params.log_level
-    );
+    tracing::info!("tracing initialized with level: {}", log_params.log_level);
+    Ok(())
+}
+
+fn main() -> anyhow::Result<()> {
+    let args = Args::parse();
+    // start tracing
+    init_tracing(&args.log_params)?;
 
     tracing::debug!("args: {:?}", args);
 
-    let vars_path = args.vars;
-    tracing::info!("load variables from: {}", vars_path.display());
-    let mut vars: HashMap<String, String> =
-        serde_json::from_str(&tokio::fs::read_to_string(&vars_path).await?)?;
-    tracing::info!("variables loaded");
-    tracing::debug!("variables: {:?}", vars);
-    let variable_update_queries: Vec<(String, String)> =
-        args.keyvalues.into_iter().tuples().collect();
-    tracing::debug!("variable update queries: {:?}", variable_update_queries);
-    tracing::info!("update variables");
-    for (k, v) in variable_update_queries {
-        match vars.get_mut(&k) {
-            Some(val) => {
-                tracing::info!("update variable: {} = {} => {}", k, val, v);
-                *val = v
-            }
-            None => {
-                tracing::error!("variable {} not found in variables", k);
-                return Err(anyhow::anyhow!("variable {} not found in variables", k));
-            }
-        };
-    }
-    tracing::info!("variables updated");
-    //let vars_path = args.vars;
-    tracing::info!("store variables in: {}", vars_path.display());
-    tokio::fs::write(&vars_path, serde_json::to_string(&vars)?).await?;
-    tracing::info!("variables stored");
-
-    if args.no_sync {
-        tracing::info!("no sync mode enabled, exiting");
-        return Ok(());
-    }
-
     let conf_path = args.conf;
     tracing::info!("load config from: {}", conf_path.display());
-    let conf: Config = serde_json::from_str(&tokio::fs::read_to_string(&conf_path).await?)?;
+    let conf: Config = serde_json::from_str(&std::fs::read_to_string(&conf_path)?)?;
     tracing::info!("config loaded");
     tracing::debug!("config: {:?}", conf);
 
-    let token_path = conf_path.parent().unwrap().join(&conf.token_path);
-    tracing::info!("load token from: {}", token_path.display());
-    let token_raw: String = serde_json::from_str(&tokio::fs::read_to_string(token_path).await?)?;
-    let token = AccessToken::new(token_raw);
-    tracing::info!("token loaded");
-    tracing::debug!("token: {:?}", token);
+    let lock_path = conf_path.parent().unwrap().join(&conf.lock_path);
+    tracing::info!("lock: {}", lock_path.display());
+    let lock_fd = open(&lock_path, OFlag::empty(), Mode::empty())?;
+    let lock = Flock::lock(lock_fd, nix::fcntl::FlockArg::LockExclusive)
+        .map_err(|_| anyhow::anyhow!("Failed to lock: {}", lock_path.display()))?;
+    tracing::info!("locked");
 
-    tracing::info!("instantiate ideal zone and records");
-    let (records_ideal, zone_ideal) = instantiate(conf.records, &vars)?;
-    tracing::info!("ideal zone and records instantiated");
-    tracing::debug!("ideal zone: {:?}", zone_ideal);
-    tracing::debug!("ideal records: {:?}", records_ideal);
+    // locked section
+    {
+        let vars_path = conf_path.parent().unwrap().join(&conf.vars_path);
+        tracing::info!("load variables from: {}", vars_path.display());
+        let mut vars: HashMap<String, String> =
+            serde_json::from_str(&std::fs::read_to_string(&vars_path)?)?;
+        tracing::info!("variables loaded");
+        tracing::debug!("variables: {:?}", vars);
 
-    tracing::info!("build client");
-    let c = Client::new(token);
-    tracing::info!("client builded");
-    tracing::debug!("client: {:?}", c);
+        let variable_update_queries: Vec<(String, String)> =
+            args.keyvalues.into_iter().tuples().collect();
+        tracing::debug!("variable update queries: {:?}", variable_update_queries);
+        tracing::info!("update variables");
+        for (k, v) in variable_update_queries {
+            match vars.get_mut(&k) {
+                Some(val) => {
+                    tracing::info!("update variable: {} = {} => {}", k, val, v);
+                    *val = v
+                }
+                None => {
+                    tracing::error!("variable {} not found in variables", k);
+                    return Err(anyhow::anyhow!("variable {} not found in variables", k));
+                }
+            };
+        }
+        tracing::info!("variables updated");
+        //let vars_path = args.vars;
+        tracing::info!("store variables in: {}", vars_path.display());
+        std::fs::write(&vars_path, serde_json::to_string(&vars)?)?;
+        tracing::info!("variables stored");
 
-    tracing::info!("get zone id from domain: {}", conf.domain);
-    let zone_node = c.get_zone_by_name(&conf.domain).await?;
+        if args.no_sync {
+            tracing::info!("no sync mode enabled, exiting");
+        } else {
+            let token_path = conf_path.parent().unwrap().join(&conf.token_path);
+            tracing::info!("load token from: {}", token_path.display());
+            let token_raw: String = serde_json::from_str(&std::fs::read_to_string(token_path)?)?;
+            let token = AccessToken::new(token_raw);
+            tracing::info!("token loaded");
+            tracing::debug!("token: {:?}", token);
+
+            tracing::info!("instantiate ideal zone and records");
+            let (records_ideal, zone_ideal) = instantiate(conf.records, &vars)?;
+            tracing::info!("ideal zone and records instantiated");
+            tracing::debug!("ideal zone: {:?}", zone_ideal);
+            tracing::debug!("ideal records: {:?}", records_ideal);
+
+            tracing::info!("build client");
+            let client = Client::new(token);
+            tracing::info!("client builded");
+            tracing::debug!("client: {:?}", client);
+
+            sync(client, conf.retry, conf.domain, zone_ideal, records_ideal)?;
+        }
+    }
+    tracing::info!("drop lock");
+    drop(lock);
+    tracing::info!("dropped");
+    Ok(())
+}
+
+#[tokio::main(flavor = "current_thread")]
+async fn sync(
+    client: Client,
+    retry: usize,
+    domain: String,
+    zone_ideal: Option<ZoneValue>,
+    records_ideal: Vec<Record>,
+) -> anyhow::Result<()> {
+    tracing::info!("get zone id from domain: {}", domain);
+    let zone_node = client.get_zone_by_name(&domain).await?;
     let zone_id = zone_node.id;
     tracing::info!("zone found: {}", zone_node.id);
 
@@ -170,7 +183,7 @@ async fn inner_main() -> anyhow::Result<()> {
 
         if t != 0 {
             tracing::info!("get zone information");
-            zone_real = c.get_zone(&zone_id).await?.zone.value;
+            zone_real = client.get_zone(&zone_id).await?.zone.value;
             tracing::info!("zone information getted");
         } else {
             tracing::info!("reuse zone information on first trial");
@@ -178,7 +191,7 @@ async fn inner_main() -> anyhow::Result<()> {
         tracing::debug!("real zone: {:?}", zone_real);
 
         tracing::info!("get records information");
-        let records_real = c.get_record_list(&zone_id).await?;
+        let records_real = client.get_record_list(&zone_id).await?;
         tracing::info!("records information getted");
 
         tracing::debug!("real records: {:?}", records_real);
@@ -199,7 +212,7 @@ async fn inner_main() -> anyhow::Result<()> {
             tracing::info!("no change");
             break;
         }
-        if t >= conf.retry {
+        if t >= retry {
             tracing::error!("retry limit reached");
             return Err(anyhow::anyhow!("retry limit reached"));
         }
@@ -208,7 +221,7 @@ async fn inner_main() -> anyhow::Result<()> {
         tracing::debug!("executing commands");
         let result = join_all(coms.iter().map(async |com| {
             tracing::info!("execute command {}", com);
-            let r = execute_command(&c, &zone_node.id, com).await;
+            let r = execute_command(&client, &zone_node.id, com).await;
             match &r {
                 Ok(_) => tracing::info!("command {} succeeded", com),
                 Err(e) => tracing::error!("command {} failed: {}", com, e),
@@ -225,12 +238,6 @@ async fn inner_main() -> anyhow::Result<()> {
         }
         t += 1;
     }
-
-    // for t in 0..conf.retry {
-    //     tracing::info!("trial: {}", t);
-    // }
-
-    // otherwise, create and delete
     Ok(())
 }
 
