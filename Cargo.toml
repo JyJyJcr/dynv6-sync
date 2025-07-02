@@ -1,7 +1,11 @@
 [package]
 name = "dynv6-sync"
 version = "0.1.0"
+authors = ["JyJyJcr <82190170+JyJyJcr@users.noreply.github.com>"]
 edition = "2024"
+license = "WTFPL"
+homepage = "https://github.com/JyJyJcr/dynv6-sync"
+description = "Dynv6 Updater"
 
 [dependencies]
 anyhow = "1.0.98"
@@ -20,3 +24,34 @@ tracing-journald = "0.3.1"
 
 # [dev-dependencies]
 # serde = "1.0.219"
+
+[package.metadata.deb]
+name = "dynv6-sync"
+section="httpd"
+priority="optional"
+depends = ["$auto"]
+
+assets = [
+    ["target/release/dynv6-sync", "usr/bin/dynv6-sync", "755"],
+]
+
+extended-description = """\
+Simple dynv6 update program mainly for hook usage."""
+
+# revision format
+# let main revision num to be %
+# debian: %+deb<deb ver>
+# ubuntu: 0ubuntu%
+# default revision is 1
+
+[package.metadata.deb.variants.debian12]
+depends = ["$auto","libssl3 (>= 3.0.0)"]
+revision = "1+deb12"
+
+[package.metadata.deb.variants.debian11]
+depends = ["$auto","libssl1.1 (>= 1.1.1)"]
+revision = "1+deb11"
+
+# [package.metadata.deb.variants.ubuntu22]
+# depends = ["$auto","libssl3 (>= 3.0.0)"]
+# revision = "0ubuntu1"
