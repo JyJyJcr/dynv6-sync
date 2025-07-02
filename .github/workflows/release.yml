@@ -208,7 +208,7 @@ jobs:
           fetch-depth: 0
       - name: merge
         run: |
-          git merge "${{ needs.configure.outputs.apt_work_branch }}" -m "ci: collect ${{ needs.configure.outputs.apt_work_branch }}"
+          git merge "origin/${{ needs.configure.outputs.apt_work_branch }}" -m "ci: collect ${{ needs.configure.outputs.apt_work_branch }}"
           git push https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
   commit:
     name: sync ${{ needs.configure.outputs.deploy_branch }} to ${{ needs.configure.outputs.work_branch }}
