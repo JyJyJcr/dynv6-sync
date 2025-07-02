@@ -6,9 +6,52 @@ on:
       - p*
 
 jobs:
+  configure:
+    name: configure
+    runs-on: ubuntu-latest
+    outputs:
+      is_release: ${{ startsWith(github.ref,'refs/tags/release/') }}
+      deploy_branch: "publish"
+      work_branch: "publish_tmp"
+      apt_work_branch: "publish_tmp_apt"
+    steps:
+      -  run: "true"
+      # - name: checkout
+      #   uses: actions/checkout@v4
+      # - name: get formula from tag
+      #   id: get_formula
+      #   run: |
+      #     formula="$(echo ${{ github.ref_name }} | awk -F'[\\\\/]' ' { print $2 }')"
+      #     [ -f "Formula/$formula.rb" ]
+      #     echo "formula=$formula" >> $GITHUB_OUTPUT
+  merge:
+    name: merge ${{ github.ref_name }} to ${{ needs.configure.outputs.work_branch }}
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+    permissions:
+      contents: write
+    steps:
+      - name: set gitconfig
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.configure.outputs.work_branch }}
+          fetch-depth: 0
+      - name: reset & merge & push
+        run: |
+          git reset --hard origin/${{ needs.configure.outputs.deploy_branch }} --
+          git merge ${{github.sha}} -m "ci: catch up to ${{github.ref_name}}"
+          git push -f https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
   build:
     name: release build on ${{matrix.target.name}}
     runs-on: ${{ matrix.target.host }}
+    needs:
+      - configure
+      - merge
     strategy:
       matrix:
         target:
@@ -39,6 +82,8 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.configure.outputs.work_branch }}
       - name: setup bare-metal
         if: (!matrix.target.docker) && (matrix.target.os == 'osx')
         run: |
@@ -73,11 +118,11 @@ jobs:
             ${{ github.workspace }}/target
           key: cache+${{matrix.target.name}}+${{github.run_id}}
           restore-keys: cache+${{matrix.target.name}}+
-      - name: build raw on bare-metal
+      - name: build release on bare-metal
         run: |
           cicd/maker.sh ${{matrix.target.name}} release
         if: (!matrix.target.docker)
-      - name: build raw in docker
+      - name: build release in docker
         run: |
           docker run --rm -i -v $PWD:/repo runner:latest bash <<'EOF'
           set -xeu
@@ -86,66 +131,112 @@ jobs:
           EOF
           sudo chown -R "$(id -u $USER):$(id -g $USER)" .
         if: matrix.target.docker
-      - name: upload debian
+      - name: upload .deb files
         uses: actions/upload-artifact@v4
         with:
           name: deb+${{ matrix.target.name }}
           path: |
             export/*
         if: matrix.target.os == 'debian'
-  # publish:
-  #   name: publish github repository
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: publish
-  #   permissions:
-  #     contents: write
-  #     actions: write
-  #   if: startsWith(github.ref,'refs/tags/v')||startsWith(github.ref,'refs/tags/p')
-  #   steps:
-  #     - name: checkout
-  #       uses: actions/checkout@v4
-  #       with:
-  #         ref: publish
-  #         fetch-depth: 0
-  #     - name: set gitconfig
-  #       run: |
-  #         git config user.name github-actions[bot]
-  #         git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-  #     - name: merge the commit to `publish`
-  #       run: |
-  #         # git branch main ${{github.ref_name}}
-  #         git merge ${{github.ref_name}} -m "ci: catch up to ${{github.ref_name}}"
-  #         # git reset --hard ${{github.ref_name}}
-  #     - name: (deb) install reprepro and dpkg-sig
-  #       run: |
-  #         sudo apt-get -y install reprepro dpkg-sig
-  #     - name: (deb) import gpg key
-  #       uses: crazy-max/ghaction-import-gpg@v6
-  #       with:
-  #         gpg_private_key: ${{ secrets.DEB_GPG_SECRET_KEY }}
-  #     - name: (deb) download deb
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         pattern: deb+*
-  #         merge-multiple: true
-  #         path: ./
-  #     - name: (deb) build repository
-  #       run: |
-  #         cd publish/${{ startsWith(github.ref,'refs/tags/v') && 'deb' || 'deb-unstable' }}
-  #         rm -rf pool
-  #         rm -rf dists
-  #         for deb in $(ls ../../ |grep -E '\.deb$');do
-  #           dpkg-sig -k 3C288CF6F3917DC32ED8605655C5F6BAACEEA951 --sign builder "../../$deb"
-  #           reprepro includedeb "$(cat ../../$deb.codename)" "../../$deb"
-  #         done
-  #         reprepro export
-  #         rm -rf db
-  #         cd -
-  #     - name: (deb) commit
-  #       run: |
-  #         git add ./publish/${{ startsWith(github.ref,'refs/tags/v') && 'deb' || 'deb-unstable' }}/
-  #         git commit -m "ci: generate debian ${{ startsWith(github.ref,'refs/tags/v') && 'stable' || 'unstable' }} repository"
-  #     - name: push
-  #       run: git push
+  publish_apt:
+    name: publish github apt repository
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - merge
+      - build
+    environment:
+      name: publish_apt
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - name: set gitconfig
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.configure.outputs.apt_work_branch }}
+          fetch-depth: 0
+      - name: reset to ${{ needs.configure.outputs.work_branch }}
+        run: |
+          git reset --hard origin/${{ needs.configure.outputs.work_branch }} --
+      - name: (deb) install reprepro and dpkg-sig
+        run: |
+          sudo apt-get -y install reprepro dpkg-sig
+      - name: (deb) import gpg key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.DEB_GPG_SECRET_KEY }}
+      - name: (deb) download deb
+        uses: actions/download-artifact@v4
+        with:
+          pattern: deb+*
+          merge-multiple: true
+          path: ./
+      - name: (deb) build repository
+        run: |
+          cd publish/${{ needs.configure.outputs.is_release && 'deb' || 'deb-unstable' }}
+          rm -rf pool
+          rm -rf dists
+          for deb in $(ls ../../ |grep -E '\.deb$');do
+            dpkg-sig -k 3C288CF6F3917DC32ED8605655C5F6BAACEEA951 --sign builder "../../$deb"
+            reprepro includedeb "$(cat ../../$deb.codename)" "../../$deb"
+          done
+          reprepro export
+          rm -rf db
+          cd -
+      - name: (deb) commit
+        run: |
+          git add ./publish/${{ needs.configure.outputs.is_release && 'deb' || 'deb-unstable' }}/
+          git commit -m "ci: generate debian ${{ needs.configure.outputs.is_release && 'stable' || 'unstable' }} repository"
+      - name: push
+        run: git push -f https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
+  collect:
+    name: collect changes to ${{ needs.configure.outputs.work_branch }}
+    runs-on: ubuntu-latest
+    needs:
+      - configure
+      - merge
+      - publish_apt
+    permissions:
+      contents: write
+    steps:
+      - name: set gitconfig
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.configure.outputs.deploy_branch }}
+          fetch-depth: 0
+      - name: merge
+        run: |
+          git reset --hard origin/${{ needs.configure.outputs.work_branch }} --
+          git merge "${{ needs.configure.outputs.apt_work_branch }}" -m "ci: collect ${{ needs.configure.outputs.apt_work_branch }}"
+          git push https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
+  commit:
+    name: sync ${{ needs.configure.outputs.deploy_branch }} to ${{ needs.configure.outputs.work_branch }}
+    needs:
+      - configure
+      - collect
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: set gitconfig
+        run: |
+          git config --global user.name github-actions[bot]
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.configure.outputs.deploy_branch }}
+          fetch-depth: 0
+      - name: reset & push
+        run: |
+          git reset --hard origin/${{ needs.configure.outputs.work_branch }} --
+          git push https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git

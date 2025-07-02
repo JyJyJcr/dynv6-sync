@@ -1,0 +1,17 @@
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: ngx-strict-sni
+Codename: bookworm
+Suite: unstable
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+SignWith: 6DED5B9463CB32337F66CD9D69C07743527D9AFE
+
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: ngx-strict-sni
+Codename: bullseye
+Suite: unstable
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+SignWith: 6DED5B9463CB32337F66CD9D69C07743527D9AFE
