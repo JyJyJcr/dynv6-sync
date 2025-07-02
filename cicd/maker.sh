@@ -50,7 +50,7 @@ echo "[EXPORT]"
 mkdir export
 if [ "$is_release" = "yes" ];then
     if [ -e "cicd/target/$target/release.sh" ];then
-        "cicd/target/$target/release.sh" "$triple"
+        "cicd/target/$target/release.sh" "$target" "$triple"
         exit $?
     else
         echo no release.sh
