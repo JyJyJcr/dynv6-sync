@@ -1,17 +1,17 @@
 Origin: https://github.com/JyJyJcr/dynv6-sync
 Label: dynv6-sync
 Codename: bookworm
-Suite: unstable
+Suite: stable
 Architectures: amd64 arm64
 Components: main
-Description: unstable apt repository for dynv6-sync
+Description: apt repository for dynv6-sync
 SignWith: 6DED5B9463CB32337F66CD9D69C07743527D9AFE
 
 Origin: https://github.com/JyJyJcr/dynv6-sync
 Label: dynv6-sync
 Codename: bullseye
-Suite: unstable
+Suite: stable
 Architectures: amd64 arm64
 Components: main
-Description: unstable apt repository for dynv6-sync
+Description: apt repository for dynv6-sync
 SignWith: 6DED5B9463CB32337F66CD9D69C07743527D9AFE

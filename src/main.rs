@@ -60,7 +60,7 @@ struct Config {
 fn main() -> anyhow::Result<()> {
     let exe = std::env::args().nth(0).unwrap();
     let fd = open(exe.as_str(), OFlag::empty(), Mode::empty())?;
-    let lock = match Flock::lock(fd, nix::fcntl::FlockArg::LockExclusiveNonblock) {
+    let lock = match Flock::lock(fd, nix::fcntl::FlockArg::LockExclusive) {
         Ok(l) => l,
         Err(_) => return Err(anyhow::anyhow!("Failed to lock the file: {}", exe)),
     };
