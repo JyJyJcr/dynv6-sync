@@ -1,29 +1,29 @@
 Origin: https://github.com/JyJyJcr/dynv6-sync
-Label: ngx-strict-sni
+Label: dynv6-sync
 Suite: unstable
 Codename: bullseye
-Date: Wed, 02 Jul 2025 06:56:13 UTC
+Date: Wed, 02 Jul 2025 08:43:07 UTC
 Architectures: amd64 arm64
 Components: main
-Description: apt repository for dynv6-sync
+Description: unstable apt repository for dynv6-sync
 MD5Sum:
- be219318f1df87497aee14a04bb8fd1b 600 main/binary-amd64/Packages
- 2ad54eef7163ef4f36460f3b9b97f363 428 main/binary-amd64/Packages.gz
- aaf56e476ed6c63fe57bb0289a187424 165 main/binary-amd64/Release
- 9766c4a3c88a4c226624176c4c2f328d 600 main/binary-arm64/Packages
- ab38bd293d9b5ff1c8be5cb12ad3c962 426 main/binary-arm64/Packages.gz
- 4855a1b8698f1238719733503460d60f 165 main/binary-arm64/Release
+ 9bb84b8ee49a5571dae7247179418370 614 main/binary-amd64/Packages
+ d4b453a336698a3463ccf42b188aaf19 431 main/binary-amd64/Packages.gz
+ 4c96a8cce1d928013b790a3b73f8e912 170 main/binary-amd64/Release
+ feb50256d752f733647e832b0853e280 614 main/binary-arm64/Packages
+ ed30513b283ab3fe0ea14f006969d70f 430 main/binary-arm64/Packages.gz
+ 259bd79a35771b62496a90c9d9c6ca10 170 main/binary-arm64/Release
 SHA1:
- 8077993c692003171c1ba1603913b429bf9c638f 600 main/binary-amd64/Packages
- 463ed3d16a86bc21b9552df6ea405604f8d867c6 428 main/binary-amd64/Packages.gz
- 843f08dda4e2514e54680d15ae84c636c60af5b4 165 main/binary-amd64/Release
- 117fbf2b5b6b1f992ab4015f81fcb51e0ee7e23f 600 main/binary-arm64/Packages
- 6b33b99550c23b5136692a86b76d71a9091e1ad4 426 main/binary-arm64/Packages.gz
- 563b3eb51763ea80d06311cfbe3003b451a21bab 165 main/binary-arm64/Release
+ 7ff7e303c648d028e9715057c10ef9cbae339f80 614 main/binary-amd64/Packages
+ 74a6b64ecc48faa9293b85b3ca64f79e6846435c 431 main/binary-amd64/Packages.gz
+ 28f450fc7b7664de63cafea25e89fb6a280cdde8 170 main/binary-amd64/Release
+ 140bc8aeb7d328949436f590185617264346733e 614 main/binary-arm64/Packages
+ 882038f47540740f0cf2f2d8a0a512bea8a9e066 430 main/binary-arm64/Packages.gz
+ 6e01734f6e75433705622f725c8a13d4d6b6825e 170 main/binary-arm64/Release
 SHA256:
- 828eb74ca2fd36e37f2216aa35dffe9da69819b74292293528e407285bbaad79 600 main/binary-amd64/Packages
- e0f4a62c1da1638c5fadbae79102ffb124830cf7027bb67660040ab1120ac15e 428 main/binary-amd64/Packages.gz
- d96aec33251cf7aefe178841e2468a2e4e26b0607b8386bee9d2910cc0099dfb 165 main/binary-amd64/Release
- 51e9c5498d3ec0539de50487e451c9eee0bf6a16f34c5786234bcf17287bd1ef 600 main/binary-arm64/Packages
- 268f1f419cf893d221512a5b35ddbe7b3542f907a85abb4af798c2d943681343 426 main/binary-arm64/Packages.gz
- bb77868ebd065d28824995f3c6957df6f9da9304604606f0f17f7e79a029afde 165 main/binary-arm64/Release
+ 8f7bbd135a25e4108503e529c1a6be492bea0cb1dd53972a197cd7d5d5b1a114 614 main/binary-amd64/Packages
+ 869373dd8dd9e7ac1b3b8e08f71db0d6524cc222bb9f521f5ded210ccd758c5f 431 main/binary-amd64/Packages.gz
+ 1667af5c934497820bd6ad5dfa8e7f98373ec0a834a299ba9c8a3dac4aef25b4 170 main/binary-amd64/Release
+ 2245419941e475fbdf0a3f3a8921d4ba513ab510c6688de1928530d23d62dbf3 614 main/binary-arm64/Packages
+ 7b9c8b81ca36ae54cbcb05294690315d4c9d8274d7cf02c3109d6b8a77e0857e 430 main/binary-arm64/Packages.gz
+ 1ff0a53c28fd81f8e48e1a02a019d64ef2b493c0d28105db131bccbb77cffe84 170 main/binary-arm64/Release
