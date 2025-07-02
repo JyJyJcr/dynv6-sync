@@ -10,7 +10,7 @@ jobs:
     name: configure
     runs-on: ubuntu-latest
     outputs:
-      is_release: ${{ startsWith(github.ref,'refs/tags/release/') && true || false }}
+      mode: ${{ startsWith(github.ref,'refs/tags/release/') && 'release' || 'prerelease' }}
       deploy_branch: "publish"
       work_branch: "publish_tmp"
       apt_work_branch: "publish_tmp_apt"
@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: check configure
         run: |
-          echo ${{needs.configure.outputs.is_release}} then ${{ startsWith(github.ref,'refs/tags/release/') && 'deb' || 'deb-unstable' }} but ${{ needs.configure.outputs.is_release && 'deb' || 'deb-unstable' }}
+          echo ${{needs.configure.outputs.mode }} then ${{ startsWith(github.ref,'refs/tags/release/') && 'deb' || 'deb-unstable' }} but ${{ needs.configure.outputs.mode == 'release' && 'deb' || 'deb-unstable' }}
 
   merge:
     name: merge ${{ github.ref_name }} to ${{ needs.configure.outputs.work_branch }}
@@ -180,7 +180,7 @@ jobs:
           path: ./
       - name: (deb) build repository
         run: |
-          cd publish/${{ needs.configure.outputs.is_release && 'deb' || 'deb-unstable' }}
+          cd publish/${{ needs.configure.outputs.mode == 'release' && 'deb' || 'deb-unstable' }}
           rm -rf pool
           rm -rf dists
           for deb in $(ls ../../ |grep -E '\.deb$');do
@@ -192,8 +192,8 @@ jobs:
           cd -
       - name: (deb) commit
         run: |
-          git add ./publish/${{ needs.configure.outputs.is_release && 'deb' || 'deb-unstable' }}/
-          git commit -m "ci: generate debian ${{ needs.configure.outputs.is_release && 'stable' || 'unstable' }} repository"
+          git add ./publish/${{ needs.configure.outputs.mode == 'release' && 'deb' || 'deb-unstable' }}/
+          git commit -m "ci: generate debian ${{ needs.configure.outputs.mode == 'release' && 'stable' || 'unstable' }} repository"
       - name: push
         run: git push -f https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
   collect:
