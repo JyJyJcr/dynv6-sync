@@ -163,9 +163,9 @@ jobs:
       - name: reset to ${{ needs.configure.outputs.work_branch }}
         run: |
           git reset --hard origin/${{ needs.configure.outputs.work_branch }} --
-      - name: (deb) install reprepro and dpkg-sig
+      - name: (deb) install reprepro and debsigs
         run: |
-          sudo apt-get -y install reprepro dpkg-sig
+          sudo apt-get -y install reprepro debsigs
       - name: (deb) import gpg key
         uses: crazy-max/ghaction-import-gpg@v6
         with:
@@ -182,7 +182,7 @@ jobs:
           rm -rf pool
           rm -rf dists
           for deb in $(ls ../../ |grep -E '\.deb$');do
-            dpkg-sig -k 3C288CF6F3917DC32ED8605655C5F6BAACEEA951 --sign builder "../../$deb"
+            debsigs -k 6DED5B9463CB32337F66CD9D69C07743527D9AFE --sign builder "../../$deb"
             reprepro includedeb "$(cat ../../$deb.codename)" "../../$deb"
           done
           reprepro export
