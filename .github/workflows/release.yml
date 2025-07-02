@@ -1,0 +1,151 @@
+name: release
+on:
+  push:
+    tags:
+      - v*
+      - p*
+
+jobs:
+  build:
+    name: release build on ${{matrix.target.name}}
+    runs-on: ${{ matrix.target.host }}
+    strategy:
+      matrix:
+        target:
+          - name: osx_arm64
+            host: macos-14
+            os: osx
+            docker: false
+          - name: osx_amd64
+            host: macos-13
+            os: osx
+            docker: false
+          - name: debian11_arm64
+            host: ubuntu-24.04-arm
+            os: debian
+            docker: true
+          - name: debian11_amd64
+            host: ubuntu-24.04
+            os: debian
+            docker: true
+          - name: debian12_arm64
+            host: ubuntu-24.04-arm
+            os: debian
+            docker: true
+          - name: debian12_amd64
+            host: ubuntu-24.04
+            os: debian
+            docker: true
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup bare-metal
+        if: (!matrix.target.docker) && (matrix.target.os == 'osx')
+        run: |
+          # brew ... ok
+          # rust ... ok
+          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+          cargo binstall -y cargo-update
+      - name: prepare docker on qemu
+        uses: docker/setup-qemu-action@v3
+        if: matrix.target.docker
+      - name: restore docker image if exist
+        id: restore-docker-image
+        uses: actions/cache@v4
+        with:
+          path: .docker
+          key: docker+${{matrix.target.name}}+${{ hashFiles(format('cicd/target/{0}/Dockerfile', matrix.target.name)) }}+${{ github.run_id }}
+          restore-keys: docker+${{matrix.target.name}}+${{ hashFiles(format('cicd/target/{0}/Dockerfile', matrix.target.name)) }}+
+        if: matrix.target.docker
+      - name: load docker image if exist
+        run: docker load --input .docker/runner.tar
+        if: matrix.target.docker && steps.restore-docker-image.outputs.cache-hit
+      - name: build and save docker image if not exist
+        run: |
+          docker build ./cicd/target/${{matrix.target.name}} -t "runner:latest"
+          mkdir -p .docker
+          docker save --output .docker/runner.tar "runner:latest"
+        if: matrix.target.docker && (! steps.restore-docker-image.outputs.cache-hit)
+      - name: set build cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/target
+          key: cache+${{matrix.target.name}}+${{github.run_id}}
+          restore-keys: cache+${{matrix.target.name}}+
+      - name: build raw on bare-metal
+        run: |
+          cicd/maker.sh ${{matrix.target.name}} release
+        if: (!matrix.target.docker)
+      - name: build raw in docker
+        run: |
+          docker run --rm -i -v $PWD:/repo runner:latest bash <<'EOF'
+          set -xeu
+          cd /repo
+          cicd/maker.sh ${{matrix.target.name}} release
+          EOF
+          sudo chown -R "$(id -u $USER):$(id -g $USER)" .
+        if: matrix.target.docker
+      - name: upload debian
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb+${{ matrix.target.name }}
+          path: |
+            export/*
+        if: matrix.target.os == 'debian'
+  # publish:
+  #   name: publish github repository
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: publish
+  #   permissions:
+  #     contents: write
+  #     actions: write
+  #   if: startsWith(github.ref,'refs/tags/v')||startsWith(github.ref,'refs/tags/p')
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         ref: publish
+  #         fetch-depth: 0
+  #     - name: set gitconfig
+  #       run: |
+  #         git config user.name github-actions[bot]
+  #         git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+  #     - name: merge the commit to `publish`
+  #       run: |
+  #         # git branch main ${{github.ref_name}}
+  #         git merge ${{github.ref_name}} -m "ci: catch up to ${{github.ref_name}}"
+  #         # git reset --hard ${{github.ref_name}}
+  #     - name: (deb) install reprepro and dpkg-sig
+  #       run: |
+  #         sudo apt-get -y install reprepro dpkg-sig
+  #     - name: (deb) import gpg key
+  #       uses: crazy-max/ghaction-import-gpg@v6
+  #       with:
+  #         gpg_private_key: ${{ secrets.DEB_GPG_SECRET_KEY }}
+  #     - name: (deb) download deb
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         pattern: deb+*
+  #         merge-multiple: true
+  #         path: ./
+  #     - name: (deb) build repository
+  #       run: |
+  #         cd publish/${{ startsWith(github.ref,'refs/tags/v') && 'deb' || 'deb-unstable' }}
+  #         rm -rf pool
+  #         rm -rf dists
+  #         for deb in $(ls ../../ |grep -E '\.deb$');do
+  #           dpkg-sig -k 3C288CF6F3917DC32ED8605655C5F6BAACEEA951 --sign builder "../../$deb"
+  #           reprepro includedeb "$(cat ../../$deb.codename)" "../../$deb"
+  #         done
+  #         reprepro export
+  #         rm -rf db
+  #         cd -
+  #     - name: (deb) commit
+  #       run: |
+  #         git add ./publish/${{ startsWith(github.ref,'refs/tags/v') && 'deb' || 'deb-unstable' }}/
+  #         git commit -m "ci: generate debian ${{ startsWith(github.ref,'refs/tags/v') && 'stable' || 'unstable' }} repository"
+  #     - name: push
+  #       run: git push
