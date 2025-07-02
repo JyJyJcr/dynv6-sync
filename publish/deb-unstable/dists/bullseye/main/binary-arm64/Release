@@ -1,0 +1,6 @@
+Archive: unstable
+Component: main
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: ngx-strict-sni
+Architecture: arm64
+Description: apt repository for dynv6-sync

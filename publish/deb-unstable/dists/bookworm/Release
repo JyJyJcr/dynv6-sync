@@ -1,0 +1,29 @@
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: ngx-strict-sni
+Suite: unstable
+Codename: bookworm
+Date: Wed, 02 Jul 2025 06:56:13 UTC
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+MD5Sum:
+ 17b4ed6e509c93412bac02f8c3147d77 598 main/binary-amd64/Packages
+ 3352ae3877ef1cdc742fa4dc8332b723 426 main/binary-amd64/Packages.gz
+ aaf56e476ed6c63fe57bb0289a187424 165 main/binary-amd64/Release
+ 0e9ae431c9c1164ba76f31450de9cb27 598 main/binary-arm64/Packages
+ 08313228dd6480d16f44d2ad6a875ca8 427 main/binary-arm64/Packages.gz
+ 4855a1b8698f1238719733503460d60f 165 main/binary-arm64/Release
+SHA1:
+ 29d1625e04c1472599a03360f8ef689f9dd49b8f 598 main/binary-amd64/Packages
+ 666cef9a452166b238284f28422f816731613b71 426 main/binary-amd64/Packages.gz
+ 843f08dda4e2514e54680d15ae84c636c60af5b4 165 main/binary-amd64/Release
+ 7dadf308590d6009901575e39e7835c19bee4e6e 598 main/binary-arm64/Packages
+ 35a2f328db6b2734312669512d43128c96873b22 427 main/binary-arm64/Packages.gz
+ 563b3eb51763ea80d06311cfbe3003b451a21bab 165 main/binary-arm64/Release
+SHA256:
+ 743608f49fb8034d7e8e308f116e6c6f7e40e14760fedd32f705324e1af42d89 598 main/binary-amd64/Packages
+ 642566e13bb6c8cb8095b359d46f80ed4a0186c4a19cc3c585f6668c0dca1754 426 main/binary-amd64/Packages.gz
+ d96aec33251cf7aefe178841e2468a2e4e26b0607b8386bee9d2910cc0099dfb 165 main/binary-amd64/Release
+ ab39386dcfaf364f015db33f734dcb682e046728d20365e798d4ce9ec2bcd118 598 main/binary-arm64/Packages
+ 7d201169382e703bbf46433791600a610d9b7e9f91de4f45d27caa206270684c 427 main/binary-arm64/Packages.gz
+ bb77868ebd065d28824995f3c6957df6f9da9304604606f0f17f7e79a029afde 165 main/binary-arm64/Release

@@ -1,0 +1,17 @@
+Package: dynv6-sync
+Version: 0.1.0-1+deb12
+Architecture: arm64
+Homepage: https://github.com/JyJyJcr/dynv6-sync
+Maintainer: JyJyJcr <82190170+JyJyJcr@users.noreply.github.com>
+Installed-Size: 5330
+Depends: libc6 (>= 2.34), libssl3 (>= 3.0.0)
+Priority: optional
+Section: httpd
+Filename: pool/main/d/dynv6-sync/dynv6-sync_0.1.0-1+deb12_arm64.deb
+Size: 1344508
+SHA256: fb581482d343c62069f1a911819e3e7884467e27df44b9d1447ef5012de84167
+SHA1: 399723dfa07787dedbc840820c9c56204d708e1d
+MD5sum: 0367c409680a73ef75bde9b8028227d8
+Description: Dynv6 Updater
+ Simple dynv6 update program mainly for hook usage.
+

@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: ngx-strict-sni
+Suite: unstable
+Codename: bullseye
+Date: Wed, 02 Jul 2025 06:56:13 UTC
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+MD5Sum:
+ be219318f1df87497aee14a04bb8fd1b 600 main/binary-amd64/Packages
+ 2ad54eef7163ef4f36460f3b9b97f363 428 main/binary-amd64/Packages.gz
+ aaf56e476ed6c63fe57bb0289a187424 165 main/binary-amd64/Release
+ 9766c4a3c88a4c226624176c4c2f328d 600 main/binary-arm64/Packages
+ ab38bd293d9b5ff1c8be5cb12ad3c962 426 main/binary-arm64/Packages.gz
+ 4855a1b8698f1238719733503460d60f 165 main/binary-arm64/Release
+SHA1:
+ 8077993c692003171c1ba1603913b429bf9c638f 600 main/binary-amd64/Packages
+ 463ed3d16a86bc21b9552df6ea405604f8d867c6 428 main/binary-amd64/Packages.gz
+ 843f08dda4e2514e54680d15ae84c636c60af5b4 165 main/binary-amd64/Release
+ 117fbf2b5b6b1f992ab4015f81fcb51e0ee7e23f 600 main/binary-arm64/Packages
+ 6b33b99550c23b5136692a86b76d71a9091e1ad4 426 main/binary-arm64/Packages.gz
+ 563b3eb51763ea80d06311cfbe3003b451a21bab 165 main/binary-arm64/Release
+SHA256:
+ 828eb74ca2fd36e37f2216aa35dffe9da69819b74292293528e407285bbaad79 600 main/binary-amd64/Packages
+ e0f4a62c1da1638c5fadbae79102ffb124830cf7027bb67660040ab1120ac15e 428 main/binary-amd64/Packages.gz
+ d96aec33251cf7aefe178841e2468a2e4e26b0607b8386bee9d2910cc0099dfb 165 main/binary-amd64/Release
+ 51e9c5498d3ec0539de50487e451c9eee0bf6a16f34c5786234bcf17287bd1ef 600 main/binary-arm64/Packages
+ 268f1f419cf893d221512a5b35ddbe7b3542f907a85abb4af798c2d943681343 426 main/binary-arm64/Packages.gz
+ bb77868ebd065d28824995f3c6957df6f9da9304604606f0f17f7e79a029afde 165 main/binary-arm64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRt7VuUY8syM39mzZ1pwHdDUn2a/gUCaGTYDQAKCRBpwHdDUn2a
+/k36AP9au7rM5sHTIJZtXpj5wCpRRPuze7r/T15mlVrCjIoBlwEA6jQT+gx1Qu00
+Q2ZRz/KqX9qBBojapvNq3SGhP4qvXAY=
+=vBtJ
+-----END PGP SIGNATURE-----
