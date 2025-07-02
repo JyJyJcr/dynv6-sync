@@ -2,28 +2,28 @@ Origin: https://github.com/JyJyJcr/dynv6-sync
 Label: dynv6-sync
 Suite: unstable
 Codename: bookworm
-Date: Wed, 02 Jul 2025 08:43:07 UTC
+Date: Wed, 02 Jul 2025 11:00:07 UTC
 Architectures: amd64 arm64
 Components: main
 Description: unstable apt repository for dynv6-sync
 MD5Sum:
- 7f7d2708f97cccda558a4d09bedad579 612 main/binary-amd64/Packages
- 3ebfe46deb6c5a26361cf1c55e3e89ce 430 main/binary-amd64/Packages.gz
+ fc8322f9bdbed604b36347c4ee0ca14e 612 main/binary-amd64/Packages
+ a956599db08de5ddabeed2903da72bb7 431 main/binary-amd64/Packages.gz
  4c96a8cce1d928013b790a3b73f8e912 170 main/binary-amd64/Release
- d88d6a51b45f17ac8439f1e6bc9934b0 612 main/binary-arm64/Packages
- e440397453411abb70df5631831cf240 432 main/binary-arm64/Packages.gz
+ 55ccb97c1ec4f6b575068a70c5f64ec7 612 main/binary-arm64/Packages
+ 60187da8a1fd7d3e2794b228eb928dd0 430 main/binary-arm64/Packages.gz
  259bd79a35771b62496a90c9d9c6ca10 170 main/binary-arm64/Release
 SHA1:
- ad0be1e79a4fcee45aeb6f391b0e759f359323c2 612 main/binary-amd64/Packages
- c0c09216b4e71a2a309087e0e00dd9059f1d81af 430 main/binary-amd64/Packages.gz
+ 2dcaabd6f796b3e54c0f4f7e2cff803cf7e1fd31 612 main/binary-amd64/Packages
+ b5530d2bfe22ff3bba178afc4b806e68da7f04bd 431 main/binary-amd64/Packages.gz
  28f450fc7b7664de63cafea25e89fb6a280cdde8 170 main/binary-amd64/Release
- 66c3fcaf20b2ac30848f4e164fe663db3d414295 612 main/binary-arm64/Packages
- 83c715fa406b407f98b872aa10e815f7ef1f3aa7 432 main/binary-arm64/Packages.gz
+ 7417923bba2a496a1a2feb2a5d9812dcd1f88596 612 main/binary-arm64/Packages
+ ec46b8003dd43dd65ed7b03df534b17097da98db 430 main/binary-arm64/Packages.gz
  6e01734f6e75433705622f725c8a13d4d6b6825e 170 main/binary-arm64/Release
 SHA256:
- ff75e5281dd19323048caa550b379c58c5cc35f8d4132fe97fa2ece177d33ccd 612 main/binary-amd64/Packages
- e1b07f3a10af8e80d764372e4531bf6a15df2411a955c023c4737dbfec8b7fc6 430 main/binary-amd64/Packages.gz
+ 5955f76d65346cc7abcbd4d649ca582dbd45e27e6a6153ca6800f34b3cd88f6d 612 main/binary-amd64/Packages
+ 674d8564de8bd0d7a8c280b16d6524716e3b9882419169c09571137e5c8b7c5b 431 main/binary-amd64/Packages.gz
  1667af5c934497820bd6ad5dfa8e7f98373ec0a834a299ba9c8a3dac4aef25b4 170 main/binary-amd64/Release
- fff71b1fbc36c240706a09dfde0135b5dd5b5f85ac508593f37e5ff2772ac863 612 main/binary-arm64/Packages
- 3d262966d5616b1d5b8d308a18cfa3657a9320d70a665742573c3c90b28d4cfc 432 main/binary-arm64/Packages.gz
+ 3c9b395ffce2efd1f837fecbe0df2d9ff7d7667ff1bf85ce6033d5573e1473fb 612 main/binary-arm64/Packages
+ 182f12e8e2f7451b3212ee87cc4f0ff09d9e97b9d78a56c3373224d6acab76ca 430 main/binary-arm64/Packages.gz
  1ff0a53c28fd81f8e48e1a02a019d64ef2b493c0d28105db131bccbb77cffe84 170 main/binary-arm64/Release
