@@ -16,15 +16,6 @@ jobs:
       apt_work_branch: "publish_tmp_apt"
     steps:
       -  run: echo ${{ github.ref }} then ${{ startsWith(github.ref,'refs/tags/release/') && 'deb' || 'deb-unstable' }}
-  fastcheck:
-    name: check configure
-    runs-on: ubuntu-latest
-    needs:
-      - configure
-    steps:
-      - name: check configure
-        run: |
-          echo ${{needs.configure.outputs.mode }} then ${{ startsWith(github.ref,'refs/tags/release/') && 'deb' || 'deb-unstable' }} but ${{ needs.configure.outputs.mode == 'release' && 'deb' || 'deb-unstable' }}
 
   merge:
     name: merge ${{ github.ref_name }} to ${{ needs.configure.outputs.work_branch }}
@@ -213,11 +204,10 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ needs.configure.outputs.deploy_branch }}
+          ref: ${{ needs.configure.outputs.work_branch }}
           fetch-depth: 0
       - name: merge
         run: |
-          git reset --hard origin/${{ needs.configure.outputs.work_branch }} --
           git merge "${{ needs.configure.outputs.apt_work_branch }}" -m "ci: collect ${{ needs.configure.outputs.apt_work_branch }}"
           git push https://oauth2:${{ github.token }}@github.com/${{ github.repository }}.git
   commit:
