@@ -15,7 +15,7 @@ jobs:
       work_branch: "publish_tmp"
       apt_work_branch: "publish_tmp_apt"
     steps:
-      -  run: "true"
+      -  run: echo ${{ github.ref }} then ${{ startsWith(github.ref,'refs/tags/release/') && 'deb' || 'deb-unstable' }}
       # - name: checkout
       #   uses: actions/checkout@v4
       # - name: get formula from tag
