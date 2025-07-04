@@ -1,0 +1,6 @@
+Archive: stable
+Component: main
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: dynv6-sync
+Architecture: arm64
+Description: apt repository for dynv6-sync

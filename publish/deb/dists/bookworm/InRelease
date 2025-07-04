@@ -1,0 +1,39 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: dynv6-sync
+Suite: stable
+Codename: bookworm
+Date: Fri, 04 Jul 2025 13:21:39 UTC
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+MD5Sum:
+ 2ccefd751c3662e146998ebae0522a8c 853 main/binary-amd64/Packages
+ bfa4d160b1d50d5fc2c74d2dfc939395 569 main/binary-amd64/Packages.gz
+ cb58f49d6a9989e5237a6b07ad9df2ce 159 main/binary-amd64/Release
+ 3ad7e58023820101b6ef49f3871f551a 853 main/binary-arm64/Packages
+ 1e4b6d4a69c79a0cdd5b150d5c0bd301 570 main/binary-arm64/Packages.gz
+ 3ecd387744234617186d8bbd17a47c3d 159 main/binary-arm64/Release
+SHA1:
+ d4c8962db1cd6f2a34d270e5bf56e38a489734c4 853 main/binary-amd64/Packages
+ efad2a126055b3f1bc32fa5a48e5480a1a3d61de 569 main/binary-amd64/Packages.gz
+ c4487f08c8879deac8de8157eab62ed0e9045166 159 main/binary-amd64/Release
+ 5075777b7dffbff805e40c819ed9869a85534af6 853 main/binary-arm64/Packages
+ fca0c382cae5f25994a43c6657758efcb28e2e6a 570 main/binary-arm64/Packages.gz
+ 42575262ad55bcdfb2d83bdeacacd502fcefa14c 159 main/binary-arm64/Release
+SHA256:
+ d7b6ee69d4bde1bf46f1944b899681f8efa2afce9297bfae85cdbf7856ecbbbf 853 main/binary-amd64/Packages
+ 5c1ca5d014ba6cb6bdd1426ce5f50ad6674679dbe08daaabb64ca134dfb099c4 569 main/binary-amd64/Packages.gz
+ 7647094e417d981129c3ad81daf60ea289eb6a70c08bc09b507a2c016c8cb55f 159 main/binary-amd64/Release
+ 55808f4005f4363f29d2b1dfb9242b21f165756f392488b2d5d4837b1ef97f16 853 main/binary-arm64/Packages
+ 82b8c9e30b9f6bc4c29a17d11972ece27fb193d1403566b6ad9e025a77060170 570 main/binary-arm64/Packages.gz
+ 92d17a5c9373e08535f43b808624ba1f2b7377365eb70b6418448a0341a80ad1 159 main/binary-arm64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRt7VuUY8syM39mzZ1pwHdDUn2a/gUCaGfVYwAKCRBpwHdDUn2a
+/vB8AP9S+QRAgXte30R9fo3PiuGzx3CHOzRW5+7faImIe7GYygD+N+8hwwzwapSN
+0GMLMd0y2kKbO5YB6Jq1cSTyBqkNjgw=
+=iwz1
+-----END PGP SIGNATURE-----

@@ -1,0 +1,29 @@
+Origin: https://github.com/JyJyJcr/dynv6-sync
+Label: dynv6-sync
+Suite: stable
+Codename: bullseye
+Date: Fri, 04 Jul 2025 13:21:39 UTC
+Architectures: amd64 arm64
+Components: main
+Description: apt repository for dynv6-sync
+MD5Sum:
+ da4cd548eb61fe8b4ed894c67272ebf5 855 main/binary-amd64/Packages
+ 415f9c7d187eb2afc296d04bd16964f6 572 main/binary-amd64/Packages.gz
+ cb58f49d6a9989e5237a6b07ad9df2ce 159 main/binary-amd64/Release
+ 3a5f739665322eb82f63cfe01a509288 855 main/binary-arm64/Packages
+ 531e3fc112fa688a2a04b52cc26110fa 569 main/binary-arm64/Packages.gz
+ 3ecd387744234617186d8bbd17a47c3d 159 main/binary-arm64/Release
+SHA1:
+ ca00c24e49b5307c5b463065aa7afa1fec50293f 855 main/binary-amd64/Packages
+ 75b2f7f4ec65b390b93f53423ad75a425d0c8fc1 572 main/binary-amd64/Packages.gz
+ c4487f08c8879deac8de8157eab62ed0e9045166 159 main/binary-amd64/Release
+ cee31defc9c174a52048ea1860c34f2917b0dae6 855 main/binary-arm64/Packages
+ d2660f7e5e985db6e31cba1430a5ed2938f2f216 569 main/binary-arm64/Packages.gz
+ 42575262ad55bcdfb2d83bdeacacd502fcefa14c 159 main/binary-arm64/Release
+SHA256:
+ 34e36d3477a86a9461a7ea81dc38cd301035d5a61b08aebbc3d1be5d1db3696d 855 main/binary-amd64/Packages
+ 81398247d37e7f39bc231c7c8cab2da341e2c7476ebde4580a9ded5857b7c5c4 572 main/binary-amd64/Packages.gz
+ 7647094e417d981129c3ad81daf60ea289eb6a70c08bc09b507a2c016c8cb55f 159 main/binary-amd64/Release
+ 385c2f34af4913b454ff42226a42f9d42f8e1e67f9a7aa87f193791ff8f40ad4 855 main/binary-arm64/Packages
+ 5ce92aab80d4eb6205135d4732c75d9867ab8adf2b06c9f8203c0269d3b84d73 569 main/binary-arm64/Packages.gz
+ 92d17a5c9373e08535f43b808624ba1f2b7377365eb70b6418448a0341a80ad1 159 main/binary-arm64/Release

@@ -1,0 +1,20 @@
+Package: dynv6-sync
+Version: 0.2.0-1+deb12
+Architecture: amd64
+Homepage: https://github.com/JyJyJcr/dynv6-sync
+Maintainer: JyJyJcr <82190170+JyJyJcr@users.noreply.github.com>
+Installed-Size: 5718
+Depends: libc6 (>= 2.34), libssl3 (>= 3.0.0)
+Priority: optional
+Section: net
+Filename: pool/main/d/dynv6-sync/dynv6-sync_0.2.0-1+deb12_amd64.deb
+Size: 1498576
+SHA256: 8ee01f29f50f5c79f0bc57533192211e9d0dc3dde742dc8f8df16e131eccba56
+SHA1: 74ce602087853f2e5c80ad77c65a051105274d60
+MD5sum: e6d14548c80c641574c04c94452921f5
+Description: Daemon-less Dynv6 sync program
+ dynv6-sync is a lightweight, daemon-less synchronization tool for the Dynv6
+ dynamic DNS service. It supports dynamic configuration changes via variable
+ updates, making it suitable for environments where assigned addresses,
+ available ports, and other network parameters frequently change.
+
