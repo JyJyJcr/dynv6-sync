@@ -5,7 +5,7 @@ authors = ["JyJyJcr <82190170+JyJyJcr@users.noreply.github.com>"]
 edition = "2024"
 license = "WTFPL"
 homepage = "https://github.com/JyJyJcr/dynv6-sync"
-description = "Dynv6 Updater"
+description = "Daemon-less Dynv6 sync program"
 
 [dependencies]
 anyhow = "1.0.98"
@@ -34,7 +34,7 @@ assets = [
     ["target/release/dynv6-sync", "usr/bin/dynv6-sync", "755"],
 ]
 extended-description = """\
-dynv6-sync is a simple dynv6 update program mainly for hook usage."""
+dynv6-sync is a lightweight, daemon-less synchronization tool for the Dynv6 dynamic DNS service. It supports dynamic configuration changes via variable updates, making it suitable for environments where assigned addresses, available ports, and other network parameters frequently change."""
 
 # revision format
 # let main revision num to be %
