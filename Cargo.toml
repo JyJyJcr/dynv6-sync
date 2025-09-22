@@ -8,7 +8,7 @@ homepage = "https://github.com/JyJyJcr/dynv6-sync"
 description = "Daemon-less Dynv6 sync program"
 
 [dependencies]
-anyhow = "1.0.98"
+anyhow = "1.0.100"
 clap = { version = "4.5.39", features = ["derive"] }
 dynv6-rs={ git = "https://github.com/JyJyJcr/dynv6-rs" }
 futures = "0.3.31"
